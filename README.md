@@ -35,4 +35,4 @@ websocket 服务提供如下路由：
 - [GET]`/ws/host`：获取主机网络情况 升级为websocket形式，每3秒推送一次。
 ## 特别说明
 - 由于gopsutil框架的实现方式，当获取CPU的使用情况时，需要等两秒钟才能够统计出CPU的使用情况，因此当通过webapi服务获取所有主机硬件资源使用情况时，需要等2秒才会有响应信息，若单独请求某一项硬件资源使用情况时，通常响应时间会在几毫秒。
-- 代码源于https://gitee.com/mo_zhenshuang/server-resource-probe设计开发
+- 代码源于https://gitee.com/mo_zhenshuang/server-resource-probe 设计开发
