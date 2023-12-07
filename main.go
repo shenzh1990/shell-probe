@@ -1,21 +1,16 @@
 package main
 
 import (
-	"shell-probe/config"
-	"shell-probe/router"
-	"shell-probe/service"
-	"strconv"
+	"github.com/shenzh1990/shell-probe/config"
+	"github.com/shenzh1990/shell-probe/router"
 )
 
 func main() {
-	startParam := config.GetStartParam()
-	switch startParam.M {
-	case "wa":
-		router.SetupRouter(strconv.Itoa(startParam.Ap))
-	case "ws":
-		service.StartWS(strconv.Itoa(startParam.Sp))
-	case "all":
-		go router.SetupRouter(strconv.Itoa(startParam.Ap))
-		service.StartWS(strconv.Itoa(startParam.Sp))
-	}
+	config.InitConfig()
+	router.SetupRouter(config.Ap)
+	//delayTime, err := util.CheckServer(config.TestAddr)
+	//if err != nil {
+	//	fmt.Print(err)
+	//}
+	//fmt.Println(delayTime)
 }

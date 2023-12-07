@@ -1,14 +1,8 @@
-/**
- * @Author root$
- * @Date 2023/3/27$
- * @Note 获取CPU信息
- **/
-
 package service
 
 import (
+	"github.com/shenzh1990/shell-probe/model"
 	"github.com/shirou/gopsutil/cpu"
-	"shell-probe/model"
 	"time"
 )
 

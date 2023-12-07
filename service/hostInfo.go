@@ -1,13 +1,8 @@
-/**
- * @Author root$
- * @Date 2023/3/27$
- * @Note 获取主机信息
- **/
-
 package service
 
 import (
-	"shell-probe/model"
+	"github.com/shenzh1990/shell-probe/config"
+	"github.com/shenzh1990/shell-probe/model"
 )
 
 // HostInfo
@@ -17,13 +12,17 @@ import (
 func HostInfo() model.HostInfo {
 	var hostInfo model.HostInfo
 	//获取CPU数据
-	hostInfo.CPU = CPUInfo()
+	if config.FCpu {
+		hostInfo.CPU = CPUInfo()
+	}
 	//获取内存数据
 	hostInfo.Mem = MemInfo()
 	//获取硬盘数据
-	hostInfo.DiskList = DiskInfo()
+	hostInfo.DiskInfo = DiskInfo()
 	//获取网络数据
 	hostInfo.Net = NetIO()
+	//获取负载信息
+	hostInfo.Load = LoadInfo()
 	return hostInfo
 
 }

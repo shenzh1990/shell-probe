@@ -1,15 +1,12 @@
-/**
- * @Author root$
- * @Date 2023/3/26$
- * @Note 使用websocket定时推送服务器硬件资源信息
- **/
-
 package service
 
 import (
 	"encoding/json"
+	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 	"github.com/robfig/cron/v3"
+	"github.com/shenzh1990/shell-probe/middleware"
+	"github.com/shenzh1990/shell-probe/util"
 	"log"
 	"net/http"
 	"sync"
@@ -26,7 +23,7 @@ func newWithSeconds() *cron.Cron {
 	return cron.New(cron.WithParser(secondParser), cron.WithChain())
 }
 
-//Conn类型表示WebSocket连接。服务器应用程序从HTTP请求处理程序调用Upgrader.Upgrade方法以获取* Conn：
+// Conn类型表示WebSocket连接。服务器应用程序从HTTP请求处理程序调用Upgrader.Upgrade方法以获取* Conn：
 var (
 	upgrader = websocket.Upgrader{
 		// 读取存储空间大小
@@ -35,12 +32,12 @@ var (
 		WriteBufferSize: 10,
 		// 允许跨域
 		CheckOrigin: func(r *http.Request) bool {
-			return true
+			return middleware.CheckToken(r.URL.Query().Get("token"))
 		},
 	}
 )
 
-func wsHandler(w http.ResponseWriter, r *http.Request) {
+func WsHandler(w http.ResponseWriter, r *http.Request) {
 	//   完成握手 升级为 WebSocket长连接，使用conn发送和接收消息。
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -52,11 +49,10 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 	//调用连接的WriteMessage和ReadMessage方法以一片字节发送和接收消息。实现如何回显消息：
 	//p是一个[]字节，messageType是一个值为websocket.BinaryMessage或websocket.TextMessage的int。
 	for {
-
 		c := newWithSeconds()
 		spec := "*/3 * * * * ?"
 		c.AddFunc(spec, func() {
-			hostByteArr, _ := json.Marshal(HostInfo())
+			hostByteArr, _ := json.Marshal(util.JsonResponse(0, util.SUCCESS_RTN, HostInfo()))
 			m.Lock() //加上互斥锁
 			if err := conn.WriteMessage(1, hostByteArr); err != nil {
 				if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseNoStatusReceived) {
@@ -64,23 +60,12 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 			m.Unlock()
-			//log.Printf("Write msg to client: recved: %s \n", hostByteArr)
 		})
 		c.Start()
 		select {}
 	}
 }
 
-//
-// StartWS
-//  @Description: 启动websocket服务
-//
-func StartWS(port string) {
-	log.Print("ws linsten on ", port)
-	http.HandleFunc("/", wsHandler) // ws://127.0.0.1:8888/
-	// 监听 地址 端口
-	err := http.ListenAndServe("0.0.0.0:"+port, nil)
-	if err != nil {
-		log.Fatal("ListenAndServe", err.Error())
-	}
+func GetWsHostInfo(c *gin.Context) {
+	WsHandler(c.Writer, c.Request)
 }

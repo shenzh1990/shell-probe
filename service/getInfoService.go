@@ -1,62 +1,61 @@
-/**
- * @Author root$
- * @Date 2023/3/26$
- * @Note 获取主机信息（gopsutil）
- **/
-
 package service
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/shenzh1990/shell-probe/util"
 	"net/http"
 )
 
-//
 // GetCPUInfo
-//  @Description: 获取CPU信息
-//  @param c:
 //
+//	@Description: 获取CPU信息
+//	@param c:
 func GetCPUInfo(c *gin.Context) {
 	cpuInfo := CPUInfo()
-	c.JSON(http.StatusOK, cpuInfo)
+	c.String(http.StatusOK, util.JsonResponse(0, util.SUCCESS_RTN, cpuInfo))
 }
 
-//
 // GetMemInfo
-//  @Description: 获取内存信息
-//  @param c:
 //
+//	@Description: 获取内存信息
+//	@param c:
 func GetMemInfo(c *gin.Context) {
 	memInfo := MemInfo()
-	c.JSON(http.StatusOK, memInfo)
+	c.String(http.StatusOK, util.JsonResponse(0, util.SUCCESS_RTN, memInfo))
 }
 
-//
 // GetDiskInfo
-//  @Description: 获取硬盘信息
-//  @param c:
 //
+//	@Description: 获取硬盘信息
+//	@param c:
 func GetDiskInfo(c *gin.Context) {
 	diskInfo := DiskInfo()
-	c.JSON(http.StatusOK, diskInfo)
+	c.String(http.StatusOK, util.JsonResponse(0, util.SUCCESS_RTN, diskInfo))
 }
 
-//
 // GetNetInfo
-//  @Description: 获取网络信息
-//  @param c:
 //
+//	@Description: 获取网络信息
+//	@param c:
 func GetNetInfo(c *gin.Context) {
 	netInfo := NetIO()
-	c.JSON(http.StatusOK, netInfo)
+	c.String(http.StatusOK, util.JsonResponse(0, util.SUCCESS_RTN, netInfo))
 }
 
-//
 // GetHostInfo
-//  @Description: 响应HTTP以Get方式获取服务器硬件资源信息请求
-//  @param c:
 //
+//	@Description: 响应HTTP以Get方式获取服务器硬件资源信息请求
+//	@param c:
 func GetHostInfo(c *gin.Context) {
 	hostInfo := HostInfo()
-	c.JSON(http.StatusOK, hostInfo)
+	c.String(http.StatusOK, util.JsonResponse(0, util.SUCCESS_RTN, hostInfo))
+}
+
+// GetHostInfo
+//
+//	@Description: 响应HTTP以Get方式获取负载资源信息请求
+//	@param c:
+func GetLoadInfo(c *gin.Context) {
+	loadInfo := LoadInfo()
+	c.String(http.StatusOK, util.JsonResponse(0, util.SUCCESS_RTN, loadInfo))
 }
